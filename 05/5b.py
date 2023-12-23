@@ -74,12 +74,12 @@ class Map:
         max_range_end = None
 
         for mapped_range in mapped_ranges:
-            if not min_range_start or mapped_range.start < min_range_start:
+            if min_range_start is None or mapped_range.start < min_range_start:
                 min_range_start = mapped_range.start
-            if not max_range_end or mapped_range.end > max_range_end:
+            if max_range_end is None or mapped_range.end > max_range_end:
                 max_range_end = mapped_range.end
 
-        if not min_range_start:
+        if min_range_start is None:
             return [map_range]
 
         if map_range.start < min_range_start:
@@ -132,8 +132,7 @@ class ProblemInstance:
         for mode in sorted(self.maps.keys()):
             seeds = self.maps[mode].find_list(seeds)
 
-        # honestly no idea how this works
-        return [seed for seed in seeds if seed.start != 0]
+        return seeds
 
 
 if __name__ == "__main__":
@@ -141,5 +140,4 @@ if __name__ == "__main__":
     with open("input") as f:
         lines = [line[:-1] for line in f.readlines()]
         problem.parse_lines(lines)
-        results = problem.calculate_seeds()
-        print(min(results))
+        print(min(problem.calculate_seeds()).start)
